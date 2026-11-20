@@ -1,0 +1,43 @@
+Hop Crew 39
+A side-on runner for phones and desktop.
+Created by Atanu Sarkar. Made with Claude.
+
+
+WHAT IT IS
+
+Hop Crew is a running game. Pick a runner, read the rival, jump or duck, and reach the finish.
+
+  Paths:  21 paths and 10 side trails, each with its own scenery, rivals and obstacles.
+  Story:  every path is a delivery for the festival. An on-time delivery earns a sticker.
+  Runners:  boy, girl, dino, robot and heroes, with outfits and colours.
+  Extras:  a sticker book, a journey map, a local Champions Board and a sticker pack you can download.
+
+
+HOW IT WORKS
+
+Hop Crew is one web page, play.html, with the game, its pictures and its sounds inside it. It runs in a web browser, or inside an app that shows web pages. Nothing is installed on a computer. On a phone you may add it to the home screen; the phone then keeps a copy so it opens without internet.
+
+
+PRIVACY
+
+  - Hop Crew has no accounts, no adverts and no tracking.
+  - It collects nothing and sends nothing. After the page has loaded it does not use the internet.
+  - Your progress, settings, stickers and scores are saved on your own device only, in the browser's storage for this page. Clearing the browser's site data removes them.
+  - The Champions Board is local to your device.
+  - The sticker pack is made on your device. It leaves your device only if you choose to share or send it yourself.
+
+
+SHARING
+
+Hop Crew is free. You may play it, copy it and share it with others under the MIT licence (see LICENSE). Keep the licence and the credit with every copy.
+
+
+TERMS
+
+  - Hop Crew is provided "as is", without warranty of any kind.
+  - The author is not liable for any damage or loss from its use.
+  - Progress is stored only on your device and can be lost if the browser's data is cleared or the device is changed. There is no backup.
+  - The game has moving scenery and flashes of light. A reduced-motion setting on your device is respected. Stop playing if you feel unwell.
+  - Hop Crew is an independent game. Its places, characters and festival are a playful setting, not a guide to real places or events. It is not affiliated with Google, with the Chrome dinosaur game, or with any company or authority.
+
+By playing Hop Crew you accept these terms.

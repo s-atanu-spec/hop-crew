@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hop Crew: a festival delivery runner you can play in your browser</title>
+<meta name="description" content="A free side-on runner for phones and laptops. 21 paths, 10 side trails and a sticker to earn on each delivery. Plays offline, with no accounts and no adverts.">
+<meta property="og:title" content="Hop Crew">
+<meta property="og:description" content="Read the rival, time the jump, deliver before the festival starts. Free, offline, no accounts.">
+<meta property="og:image" content="docs/screenshots/neon-causeway.jpg">
+<meta name="theme-color" content="#151833">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#12142a;--panel:#1b1f45;--panel2:#232858;--line:#ffffff1f;--ink:#f5f3ff;--muted:#b4b6dc;--gold:#ffc83d;--gold2:#ff9d2e;--mint:#5fe3c8;--pink:#ff7ab6;--font:"Baloo 2","Fredoka","Nunito","Poppins",ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Segoe UI",Roboto,system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.55;font-size:17px;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 500px at 85% -10%,#3a2f7a66,transparent 70%),radial-gradient(700px 480px at -10% 30%,#1f6f7a40,transparent 70%)}
+a{color:var(--mint)}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.logo{font-weight:900;font-size:26px;letter-spacing:.01em;text-decoration:none;display:inline-flex;align-items:center;gap:7px;text-transform:uppercase}
+.logo span{color:var(--gold)}.logo b{color:#fff}.logo i{width:9px;height:9px;border-radius:50%;background:var(--mint);display:inline-block;transform:translateY(-7px)}
+nav a{margin-left:22px;text-decoration:none;color:var(--muted);font-weight:700;font-size:15px;white-space:nowrap}
+nav a:hover{color:#fff}
+.hero{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:center;padding:34px 0 60px}
+.kicker{display:inline-block;font-weight:800;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+h1{font-size:54px;line-height:1.04;margin:0 0 16px;font-weight:900;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--gold)}
+.lead{font-size:19px;color:var(--muted);margin:0 0 26px;max-width:26em}
+.btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2b1b05;text-decoration:none;font-weight:900;font-size:20px;padding:14px 30px;border-radius:16px;box-shadow:0 6px 0 #b9650f,0 16px 30px #0006;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(2px);box-shadow:0 4px 0 #b9650f,0 12px 24px #0006}
+.btn:active{transform:translateY(6px);box-shadow:0 0 0 #b9650f}
+.btn svg{width:20px;height:20px}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line);box-shadow:none;font-size:16px;font-weight:800;padding:12px 20px;margin-left:10px}
+.btn.ghost:hover{background:#ffffff12;transform:none}
+.note{font-size:14.5px;color:var(--muted);margin-top:18px}
+.screen{border-radius:20px;overflow:hidden;border:3px solid #ffffff26;box-shadow:0 30px 70px #0009,0 0 0 8px #ffffff0a;transform:rotate(1.2deg);background:#000}
+.screen img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 20px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 16px;text-align:center}
+.stat b{display:block;font-size:34px;line-height:1;font-weight:900;color:var(--gold)}
+.stat span{font-size:14px;color:var(--muted);font-weight:700}
+section{padding:58px 0}
+h2{font-size:34px;line-height:1.1;margin:0 0 10px;font-weight:900}
+.sub{color:var(--muted);margin:0 0 30px;max-width:38em}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card h3{margin:0 0 6px;font-size:19px;font-weight:900}
+.card p{margin:0;color:var(--muted);font-size:15.5px}
+.key{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;margin-bottom:14px;font-size:24px;font-weight:900;color:#1b1206;box-shadow:inset 0 -4px 0 #0003}
+.key.j{background:linear-gradient(180deg,#ffd15a,#ff9d2e)}.key.d{background:linear-gradient(180deg,#7fc4ff,#3f8fe8);color:#06203f}.key.b{background:linear-gradient(180deg,#c9a4ff,#8f6be8);color:#1e0d45}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.shot{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--panel);position:relative}
+.shot img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .5s}
+.shot:hover img{transform:scale(1.04)}
+.shot figcaption{position:absolute;left:10px;bottom:10px;background:#12142acc;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:800}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.list{margin:0;padding:0;list-style:none}
+.list li{position:relative;padding:0 0 12px 30px;color:var(--muted)}
+.list li b{color:var(--ink)}
+.list li::before{content:"";position:absolute;left:4px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px #ffc83d2e}
+.stickers{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px}
+.stickers i{aspect-ratio:1;border-radius:50%;background-color:#eef2ff;background-image:url(src/assets/sprites/items.webp);background-size:700% 300%;box-shadow:0 0 0 3px #fff,0 4px 10px #0006}
+.stickers i:nth-child(3n){background-color:#fff3c4;box-shadow:0 0 0 3px var(--gold),0 4px 12px #ffc83d55}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.num{counter-reset:n;list-style:none;margin:0;padding:0}
+.num li{counter-increment:n;position:relative;padding:0 0 10px 38px;color:var(--muted);font-size:15.5px}
+.num li::before{content:counter(n);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--mint);color:#06302a;font-weight:900;font-size:14px;display:grid;place-items:center}
+.cta{text-align:center;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:26px;padding:46px 22px}
+.cta h2{margin-bottom:8px}.cta p{color:var(--muted);margin:0 0 24px}
+footer{padding:34px 0 54px;color:var(--muted);font-size:14.5px;display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+footer a{color:var(--muted)}
+@media (max-width:900px){.hero,.story,.two{grid-template-columns:1fr}.hero{padding-top:14px;gap:28px}.screen{transform:none}h1{font-size:40px}h2{font-size:28px}.steps{grid-template-columns:1fr}.gallery{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}nav a:not(:last-child){display:none}.btn.ghost{margin:12px 0 0}}
+@media (max-width:520px){.gallery{grid-template-columns:1fr}.stickers{gap:7px;padding:12px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.shot img{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="logo" href="#top" aria-label="Hop Crew"><span>Hop</span><i></i><b>Crew</b></a>
+  <nav><a href="#play">How to play</a><a href="#paths">Paths</a><a href="#story">Stickers</a><a href="#phone">On your phone</a><a href="https://github.com/s-atanu-spec/hop-crew">GitHub</a></nav>
+</header>
+
+<div class="hero" id="top">
+  <div>
+    <span class="kicker">Free browser game</span>
+    <h1>Read the rival.<br><em>Hop</em> to the finish.</h1>
+    <p class="lead">The festival starts tonight and every path is a delivery. Pick a runner, dodge what the road throws at you, and get the parcel there on time.</p>
+    <a class="btn" href="play.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l13-7.5a1 1 0 0 0 0-1.72l-13-7.5A1 1 0 0 0 7 4.5Z" fill="currentColor"/></svg>Play now</a>
+    <a class="btn ghost" href="#phone">Put it on your phone</a>
+    <p class="note">Works on phones and laptops. No sign-up, no adverts, nothing to install. The first load is about 15 MB, then it plays offline.</p>
+  </div>
+  <a class="screen" href="play.html" aria-label="Play Hop Crew"><img src="docs/screenshots/neon-causeway.jpg" width="1280" height="720" alt="A runner in a hat sprints down Neon Causeway past palms, taxis and a pink diner"></a>
+</div>
+
+<div class="stats" aria-label="What is inside">
+  <div class="stat"><b>21</b><span>paths</span></div>
+  <div class="stat"><b>10</b><span>side trails</span></div>
+  <div class="stat"><b>9</b><span>runners</span></div>
+  <div class="stat"><b>21</b><span>stickers to earn</span></div>
+</div>
+
+<section id="play">
+  <h2>Three buttons, one good read</h2>
+  <p class="sub">Every rival tells you its move before it makes it. The skill is reading the banner and trusting your timing.</p>
+  <div class="steps">
+    <div class="card"><span class="key j">&#8593;</span><h3>Jump</h3><p>Tap the scene, or press Space or Up. Tap again in the air for a double jump over the big ones.</p></div>
+    <div class="card"><span class="key d">&#8595;</span><h3>Duck</h3><p>Hold Duck, or press Down or S, when something swoops in at head height.</p></div>
+    <div class="card"><span class="key b">&#9889;</span><h3>Boost</h3><p>Clean escapes charge it. When the cue turns green, press B and each runner does its own thing.</p></div>
+  </div>
+</section>
+
+<section id="paths">
+  <h2>Every path is its own place</h2>
+  <p class="sub">Courtyards, tea gardens, rooftops, a neon causeway, a relay post on Mars. Each has its own rivals, music, street life and a hidden side trail to find.</p>
+  <div class="gallery">
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/parade.jpg" width="1280" height="720" alt="Parade floats, stalls and a fairground wheel"><figcaption>Poila Boishakh Parade</figcaption></figure>
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/tea-garden.jpg" width="1280" height="720" alt="Green tea terraces with a picker's shed"><figcaption>Tea Garden</figcaption></figure>
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/midnight-city.jpg" width="1280" height="720" alt="A dark city street with lit shop fronts"><figcaption>Midnight City</figcaption></figure>
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/festival-lane.jpg" width="1280" height="720" alt="A dusk lane of sweet stalls, balloons and kites"><figcaption>Festival Lane</figcaption></figure>
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/mars-relay.jpg" width="1280" height="720" alt="Red canyon with a habitat dome and antenna"><figcaption>Mars Relay</figcaption></figure>
+    <figure class="shot"><img loading="lazy" src="docs/screenshots/tropical-island.jpg" width="1280" height="720" alt="A beach with palms, a hut and a boat"><figcaption>Tropical Island</figcaption></figure>
+  </div>
+</section>
+
+<section id="story">
+  <div class="story">
+    <div>
+      <h2>Deliver on time, earn the sticker</h2>
+      <p class="sub" style="margin-bottom:20px">Each run starts with a handover and a delivery clock. Hits cost you time; clean escapes win it back.</p>
+      <ul class="list">
+        <li><b>On time</b> earns that path's sticker for your book.</li>
+        <li><b>Find the three hidden parcels</b> on the way and it turns gold.</li>
+        <li><b>Fill the book</b> and your runner gets a crown, plus a sticker pack to download and keep.</li>
+        <li><b>Watch for the Red Dino.</b> Dodge it, or find the star charm and send it packing.</li>
+      </ul>
+    </div>
+    <div class="stickers" id="stickers" aria-label="The 21 delivery stickers"></div>
+  </div>
+</section>
+
+<section id="phone">
+  <h2>Put it on your phone</h2>
+  <p class="sub">It installs straight from the browser, opens full screen and keeps working with no signal.</p>
+  <div class="two">
+    <div class="card"><h3>Android</h3>
+      <ol class="num"><li>Open this page in Chrome and press Play now.</li><li>Open the menu (three dots) and choose "Add to Home screen".</li><li>Choose Install. Hop Crew now has its own icon.</li></ol>
+    </div>
+    <div class="card"><h3>iPhone and iPad</h3>
+      <ol class="num"><li>Open this page in Safari and press Play now.</li><li>Press the Share button.</li><li>Choose "Add to Home Screen".</li></ol>
+    </div>
+  </div>
+  <p class="note">Private by design: no accounts, no tracking, nothing sent anywhere. Your progress stays on your own device. Details are in the <a href="TERMS.txt">terms and privacy notes</a>.</p>
+</section>
+
+<section>
+  <div class="cta">
+    <h2>The festival will not wait</h2>
+    <p>Your first delivery is clay lamps for the lamp lighter.</p>
+    <a class="btn" href="play.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l13-7.5a1 1 0 0 0 0-1.72l-13-7.5A1 1 0 0 0 7 4.5Z" fill="currentColor"/></svg>Play now</a>
+  </div>
+</section>
+
+<footer>
+  <span>Created by Atanu Sarkar. Made with Claude. Free to play and share under the <a href="LICENSE">MIT licence</a>.</span>
+  <span><a href="https://github.com/s-atanu-spec/hop-crew">Source on GitHub</a> · <a href="TERMS.txt">Terms</a></span>
+</footer>
+</div>
+<script>
+// the sticker sheet is 7 across and 3 down, in path order
+(function(){var box=document.getElementById("stickers");for(var k=0;k<21;k++){var d=document.createElement("i");d.style.backgroundPosition=(k%7/6*100)+"% "+(Math.floor(k/7)/2*100)+"%";box.appendChild(d)}})();
+</script>
+</body>
+</html>

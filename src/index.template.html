@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hop Crew</title>
+<meta name="theme-color" content="#151833">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+/*@@css:game.css@@*/
+</style>
+
+
+</head>
+<body>
+<main>
+  <header class="appbar"><div class="brand"><h1 class="logo"><span>Hop</span><i aria-hidden="true"></i><b>Crew</b></h1></div>
+  <div class="appbar-right"><span class="pill">Offline · Solo</span><button id="board" aria-label="Champions Board"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 0 1-10 0Z" fill="#ffc83d"/><path d="M7 5H3v2a4 4 0 0 0 4 4m10-6h4v2a4 4 0 0 1-4 4" fill="none" stroke="#ffc83d" stroke-width="2"/><path d="M10 13h4v4h3v3H7v-3h3Z" fill="#ff9d2e"/></svg><span>Champions</span></button></div></header>
+  <p class="subtitle">Pick your runner. Read the rival. Hop to the finish.</p>
+  <section id="gameFrame" class="frame" aria-label="Hop Crew game">
+    <div class="meters">
+      <div class="meter"><span>Best</span><b id="best">0</b></div>
+      <div class="meter points-meter"><span>Points</span><b id="points">0</b><strong id="pointCost" class="point-cost" hidden>−20</strong></div>
+      <div class="meter"><span>Path</span><b id="zone">Terracotta Courtyard</b></div>
+    </div>
+    <div class="stage">
+      <canvas id="scene3" aria-hidden="true"></canvas><canvas id="world" tabindex="0" aria-label="Runner path. Tap or press Space to jump."></canvas>
+      <div class="live-stats">
+        <div class="live-stat"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#d57d29"/><circle cx="12" cy="11" r="7.8" fill="#ffcd4e"/><path d="m12 5 1.7 4.1 4.4.4-3.4 2.8 1 4.3-3.7-2.3-3.7 2.3 1-4.3L6 9.5l4.3-.4Z" fill="#fff5bb"/></svg><span>Score</span><b id="score">0</b><strong id="scoreCost" class="score-cost" hidden>-20</strong></div>
+        <div class="live-stat"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 21V4" stroke="#255a58" stroke-width="3" stroke-linecap="round"/><path d="M7 3c5-3 7 3 14 0v10c-7 3-10-3-14 0Z" fill="#2caa82"/><path d="M10 6h4v4h-4z" fill="#eaffd1"/></svg><span>Level</span><b id="level">1</b><div id="levelTrack" class="level-track" role="progressbar" aria-label="Path progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div></div>
+        <div class="live-stat"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="7" rx="2" fill="none" stroke="#ce4957" stroke-width="2.5"/><rect x="2" y="7" width="20" height="15" rx="4" fill="#db4556"/><rect x="2" y="6" width="19" height="14" rx="4" fill="#ff655f"/><path d="M12 9v8m-4-4h8" stroke="#fff8ed" stroke-width="3" stroke-linecap="round"/></svg><span>Packs</span><b id="health">1</b></div>
+        <div class="live-stat"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 1 10 9-10 13L2 10Z" fill="#5831be"/><path d="m12 1 7 9-7 9-7-9Z" fill="#9461ff"/><path d="m12 4 1.6 4.4L18 10l-4.4 1.5L12 16l-1.6-4.5L6 10l4.4-1.6Z" fill="#fff0ff"/></svg><span>Boosters</span><b id="boosters">0</b></div>
+      </div>
+      <div class="vitals" aria-label="Runner vitality"><span aria-hidden="true">♥</span><span id="vitality">100%</span><i><em id="vitalityBar"></em></i><b id="shieldBadge" hidden>◇ Shield</b></div>
+      <div id="forkDecision" role="dialog" aria-modal="true" aria-labelledby="forkTitle" hidden><div class="fork-card">
+        <strong id="forkTitle">Choose your road</strong><p id="forkDetail">The run is paused.</p><div id="forkPostcard"></div>
+        <div class="fork-options"><button id="takeMain" type="button">Main road</button><button id="takeSpur" type="button">Side trail</button></div></div></div>
+      <div id="powerNotice" role="status" hidden></div><div id="fieldCue" role="status" hidden></div>
+      <div id="opening" class="opening" hidden><small id="openingDino">Dino</small><strong id="openingName"></strong></div>
+      <button id="skipIntro" type="button" hidden>Skip intro</button>
+      <div id="encounterCue" class="encounter-cue" hidden><small id="rivalName"></small><b id="rivalMove"></b><i><em id="rivalClock"></em></i></div>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <div id="gain" class="gain" aria-hidden="true" hidden></div>
+      <div id="coach" class="coach" hidden><strong id="coachText"></strong><small id="coachSub"></small><button type="button" id="skipCoach">Skip tutorial</button></div>
+      <div id="clockChip" class="clock-chip" hidden><span id="clockIcon"></span><b id="clockText"></b><i id="clockPips"><em></em><em></em><em></em></i></div><div id="charmChip" class="charm-chip" hidden>★ Star charm</div><div id="comboChip" class="combo-chip" hidden><b id="combo"></b><small>clean run</small></div>
+      <div id="veil" class="veil"><div class="panel">
+        <div id="dedication" hidden>From R <span aria-hidden="true">❤️</span></div><div id="levelStar" class="level-star" aria-hidden="true" hidden><svg viewBox="0 0 96 84"><path d="M25 15H8v12c0 12 10 18 23 18m39-30h17v12c0 12-9 18-23 18" fill="none" stroke="#ffd36d" stroke-width="6"/><path d="M23 9h50l-3 22q-4 18-18 22v9l12 5v5H32v-5l12-5v-9Q29 48 26 31Z" fill="#ffbf4b" stroke="#fff1a0" stroke-width="3"/><path d="m48 17 3.2 8.9 9.4.2-7.4 6 2.9 9-8.1-5.1-8.1 5.1 2.9-9-7.4-6 9.4-.2Z" fill="#fff4c6"/></svg></div>
+        <div id="tramTicket" class="tram-ticket" hidden><small>KOLKATA TRAMWAYS</small><strong lang="bn">শেষ ট্রাম</strong><span>Esplanade</span></div>
+        <div id="stars" class="stars" hidden><i>★</i><i>★</i><i>★</i></div><h2 id="prompt">Ready to run?</h2><p id="hint">Tap near a cactus to jump. Tap twice for tall or double cacti.</p>
+        <div id="results" class="results" hidden><div id="tallyList" class="tally"></div></div>
+        <div class="actions"><button class="primary" id="start">Start run</button><button type="button" id="howTo" class="ghost">How to play</button><button type="button" id="openRunner" class="ghost">Runner</button><button type="button" id="openPaths" class="ghost">Paths</button><button type="button" id="openJourney" class="ghost">Journey</button><button type="button" id="neonShortcut">Neon Causeway</button><button id="quit" hidden>Quit to menu</button></div>
+      </div></div>
+      <div id="rescue" class="veil rescue-veil" hidden><div class="panel rescue-panel" role="dialog" aria-modal="true" aria-labelledby="rescueTitle">
+        <div class="patch-icon" aria-hidden="true">✚</div>
+        <h2 id="rescueTitle">Ouch!</h2><p><span id="rescueInfo">Use a health pack for 20 points.</span></p>
+        <div id="rescueTimer" class="rescue-timer" role="progressbar" aria-label="Rescue time remaining" aria-valuemin="0" aria-valuemax="3000" aria-valuenow="3000"><i></i></div>
+        <button id="help" class="help">Help me</button>
+      </div></div>
+    </div>
+    <div class="controls">
+      <div class="keys"><span><kbd>Space</kbd> jump</span><span><kbd>B</kbd> boost</span><span><kbd>Esc</kbd> pause</span></div>
+      <div class="tools">
+        <button id="settings" aria-label="Game settings" title="Game settings"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 2h4l1 3 2 1 3-.5 2 3.5-2 2v2l2 2-2 3.5-3-.5-2 1-1 3h-4l-1-3-2-1-3 .5L2 15l2-2v-2L2 9l2-3.5L7 6l2-1Z"/><circle cx="12" cy="12" r="3.3"/></svg></button>
+        <button id="full" aria-label="Enter fullscreen" title="Enter fullscreen" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path id="fullGlyph" d="M3 9V3h6m6 0h6v6m0 6v6h-6m-6 0H3v-6"/></svg></button>
+        <button id="pause" aria-label="Pause" title="Pause" disabled><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14" stroke-width="3.2"/></svg></button>
+      </div>
+      <div class="control-buttons"><button id="flame" class="flame" hidden>Flame</button><button id="superJump" class="ink" hidden>Super</button><button class="danger" id="boost" disabled>Boost</button><button id="duck" type="button" aria-label="Duck, tap or hold" aria-pressed="false" disabled>Duck</button><button class="ink" id="jump" disabled>Jump</button></div>
+    </div>
+    <dialog id="pathSettings" class="path-settings" aria-labelledby="pathTitle">
+      <div class="dialog-top"><div><h2 id="pathTitle">Game settings</h2><p id="pathHint"></p></div><button id="closeSettings" aria-label="Close game settings">Close</button></div>
+      <div id="switches" class="switches" role="group" aria-label="Settings section"><button type="button" data-view="story">Story paths</button><button type="button" data-view="bonus">Bonus paths</button><button type="button" data-view="dino">Runner &amp; sound</button><button type="button" data-view="difficulty">Difficulty</button></div>
+      <div class="path-scroll" id="settingsScroll"><div id="pathList" class="path-list"></div>
+      <div id="customRules" hidden><fieldset class="difficulty"><legend>Difficulty</legend><div class="studio-fields">
+  <label>Running speed<select id="runPace"><option value="1">1× · Classic</option><option value="1.15">1.15× · Fast</option><option value="1.3">1.30× · Sprint</option></select></label>
+  <label>Explosion damage<select id="blastLevel"><option value="0.5">Half damage</option><option value="1">1× · Classic</option><option value="1.5">1.5× damage</option><option value="2">2× damage</option></select></label>
+  <label>Collision damage<select id="contactLevel"><option value="0">Classic rules</option><option value="15">15% per hit</option><option value="35">35% per hit</option><option value="60">60% per hit</option></select></label></div>
+  </fieldset><p id="damageHint">Classic collisions use a health pack to revive after a road obstacle. A missed animal dodge usually costs 25% vitality.</p><button id="resetRules" type="button">Restore classic difficulty</button></div><div id="wardrobe" hidden><div class="pet-head"><canvas id="petPreview" width="400" height="224" aria-label="Your runner preview"></canvas><label>Runner name<input id="petName" maxlength="22" autocomplete="off"></label></div>
+      <div class="picker"><h3>Choose your runner</h3><div id="runnerCards" class="runner-cards" role="group" aria-label="Runner"></div>
+      <h3 id="wearTitle">Outfit</h3><div id="wearChips" class="chips" role="group" aria-label="Outfit"></div>
+      <h3 id="tintTitle">Colour</h3><div id="tintSwatches" class="swatches" role="group" aria-label="Colour"></div></div>
+      <details id="rivalBox" class="cast-studio"><summary>Rival gallery</summary><div id="rivalGrid" class="rival-grid"></div></details>
+  
+  <fieldset><legend>Sound</legend><label><input type="checkbox" id="musicToggle">Music beats</label><label><input type="checkbox" id="sfxToggle">Game effects</label><label><input type="checkbox" id="filmToggle">Opening film</label><label><input type="checkbox" id="sceneToggle">Story scenes</label><label class="volume-row">Volume <input id="volume" type="range" min="0" max="100" step="5" value="90"><output id="volumeOut">90%</output></label></fieldset>
+      </div></div>
+      <div class="path-actions">
+        <button id="tourButton" type="button">25-minute tour</button>
+        <button class="primary" id="playPath">Play selected path</button>
+      </div>
+    </dialog>
+    <div id="film" class="film"><canvas id="filmCanvas" aria-hidden="true"></canvas>
+  <div id="filmTitle" class="film-title" aria-hidden="true"><strong class="logo"><span>Hop</span><i></i><b>Crew</b></strong><em>Run together. Dodge everything.</em></div>
+  <div id="filmStart" class="film-start"><strong class="logo"><span>Hop</span><i></i><b>Crew</b></strong><button id="filmPlay" class="primary" type="button">Tap to play</button><em>Best with headphones</em></div>
+  <button id="filmSkip" type="button" hidden>Skip ›</button></div>
+    <div id="scene" class="scene" hidden><canvas id="sceneCanvas" aria-hidden="true"></canvas><div id="sceneWords" class="scene-words" role="status"><small id="sceneTag"></small><strong id="sceneLine"></strong><span id="sceneSub"></span></div><button id="sceneSkip" type="button">Skip ›</button></div>
+  </section>
+  <section class="lobby" aria-label="Quick picks">
+    <button type="button" id="lobbyRunner" class="lobby-card"><canvas id="lobbyPet" width="400" height="224" aria-hidden="true"></canvas><span><small>Runner</small><strong id="lobbyName">Dino</strong><em>Tap to change look</em></span></button>
+    <button type="button" id="lobbyPath" class="lobby-card"><canvas id="lobbyThumb" width="240" height="116" aria-hidden="true"></canvas><span><small>Path</small><strong id="lobbyZone"></strong><em id="lobbyProgress"></em></span></button>
+    <button type="button" id="lobbyJourney" class="lobby-card journey-card"><canvas id="lobbyAvatar" width="240" height="240" aria-hidden="true"></canvas><span><small>Journey</small><strong id="lobbyStickers"></strong><em id="lobbyStreak"></em></span></button>
+  </section>
+</main>
+<dialog id="journey" class="journey" aria-labelledby="journeyTitle">
+  <div class="dialog-top"><canvas id="mapAvatar" class="map-avatar" width="264" height="264" aria-hidden="true"></canvas><div><h2 id="journeyTitle">Road to the festival</h2><p id="journeyHint"></p><p id="journeyCrown" class="crown-line" hidden>👑 Every festival sticker earned</p></div><button id="closeJourney" aria-label="Close journey map">Close</button></div>
+  <div class="map-scroll"><div id="mapRoad" class="map-road"></div><h3>Side jobs</h3><div id="mapSide" class="map-side"></div><h3>Sticker book <span id="bookCount"></span></h3><div id="mapBook" class="map-book"></div><div class="pack"><p id="packHint"></p><div><button id="packZip" class="primary" type="button">Download sticker pack</button><button id="packShare" class="ghost" type="button">Share pictures</button></div></div></div>
+  <div class="map-actions"><span id="mapPick"></span><button class="primary" id="mapPlay" type="button">Play</button></div>
+</dialog>
+<dialog id="champions">
+  <div class="dialog-top"><h2>Champions Board</h2><button id="close" aria-label="Close Champions Board">Close</button></div>
+  <p>Ranked by best run. Boosters and lifetime points are shown for each player.</p>
+  <label>Player name <input id="name" maxlength="24" value="Player"></label>
+  <table><thead><tr><th>Player</th><th>Level</th><th>Boosters</th><th>Best run</th><th>Total points</th></tr></thead><tbody id="rows"></tbody></table>
+  <details><summary>Share a record</summary>
+    <p>Show your record and copy it to a friend. Paste a record here to add it to this board.</p>
+    <textarea id="record" aria-label="Player record" maxlength="500"></textarea>
+    <button id="showRecord">Show my record</button><button id="addRecord">Add a record</button>
+    <p id="recordStatus" role="status"></p>
+  </details>
+</dialog>
+<script>
+/*@@js:game.js@@*/
+</script>
+<script>
+/*@@js:cast.js@@*/
+</script>
+</body>
+</html>
